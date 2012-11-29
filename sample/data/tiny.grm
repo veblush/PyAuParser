@@ -1,0 +1,90 @@
+"Name"    = 'Tiny'
+"Version" = 'Based on Kenneth C. Louden's YACC grammar'
+"Author"  = 'Kenneth C. Louden'
+"About"   = 'This grammar is used in Compiler Construction: Principles and Practice (ISBN 0-534-93972-4)'
+
+"Case Sensitive" = False
+
+"Start Symbol" = <program>
+
+
+! ============================================================ Comments
+
+Comment Start = '{'
+Comment End   = '}'
+
+! Please note: In the original Lex specification, block comments 
+! cannot be nested. The Comment Start and Comment End definitions,
+! however, allow nesting. 
+!
+! To implement non-nested comments, the whitespace terminal needs to 
+! be manually defined to accept them. In the definition below, 
+! Whitespace is defined as one or more {Whitespace} characters OR a 
+! series of characters delimited by '{' and '}'. Note that the 
+! characters between the two delimiters cannot contain '}'.
+!
+! Uncomment the following to prevent block commments. Make sure to 
+! comment the Comment Start and Comment End definitions.
+!
+! {Comment Char} = {Printable} + {Whitespace} - '}'
+! 
+! Whitespace     = {Whitespace}+ 
+!                | '{'  {Comment Char}*  '}'
+
+
+! ============================================================ Terminals
+
+Number   = {Digit}+
+ID       = {Letter}+
+
+! ============================================================ Rules
+
+<program>
+        ::= <stmt seq> 
+
+<stmt seq>
+        ::= <stmt seq> ';' <stmt> 
+         |  <stmt> 
+
+<stmt>
+        ::= <if stmt> 
+         |  <repeat stmt> 
+         |  <assign stmt> 
+         |  <read stmt> 
+         |  <write stmt> 
+
+<if stmt>
+        ::= IF <exp> THEN <stmt seq> END 
+         |  IF <exp> THEN <stmt seq> ELSE <stmt seq> END 
+
+<repeat stmt>
+        ::= REPEAT <stmt seq> UNTIL <exp> 
+
+<assign stmt>
+        ::= ID ':=' <exp> 
+
+<read stmt>
+        ::= READ ID 
+
+<write stmt>
+        ::= WRITE <exp> 
+
+<exp>
+        ::= <simple exp> '<' <simple exp> 
+         |  <simple exp> '=' <simple exp> 
+         |  <simple exp> 
+
+<simple exp>
+        ::= <simple exp> '+' <term> 
+         |  <simple exp> '-' <term> 
+         |  <term> 
+
+<term>
+        ::= <term> '*' <factor> 
+         |  <term> '/' <factor> 
+         |  <factor> 
+
+<factor>
+        ::= '(' <exp> ')'
+         |  Number
+         |  ID       

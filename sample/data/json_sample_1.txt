@@ -1,0 +1,5 @@
+{
+	"num": 10,
+	"array1": [ 1.25, "Hello", "안녕" ],
+	"array2": [ null, false, true ]
+}

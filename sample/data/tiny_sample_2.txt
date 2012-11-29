@@ -1,0 +1,11 @@
+read i;
+if i < 0 then
+  write 0
+else
+  s := 0;
+  repeat
+    s := s + i;
+    i := i - 1
+  until 0 < i;
+  write s
+end

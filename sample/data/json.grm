@@ -1,0 +1,57 @@
+! ====================================================================
+! Properties
+! ====================================================================
+
+"Name"              = 'JSON Grammar for GOLD Parser'
+"Author"            = 'Esun Kim'
+"Version"           = '1.0'
+"About"             = 'JSON by Douglas Crockford'
+                    | 'http://www.ietf.org/rfc/rfc4627.txt'
+"Case Sensitive"    = 'True'
+"Character Mapping" = 'Unicode'
+"Auto Whitespace"   = 'False'
+"Start Symbol"      = <Json>
+
+! ====================================================================
+! Terminals
+! ====================================================================
+
+{Ws}        = {&09, &0A, &0D, &20}                    
+{Unescaped} = {&20 .. &FFFF} - ["\]
+{Number1_9} = {Number} - [0]
+{Hex}       = {Number} + [ABCDEFabcdef]
+
+Whitespace  = {Ws}+
+Integer     = '-'?('0'|{Number1_9}{Number}*)
+Float       = '-'?('0'|{Number1_9}{Number}*)(('.'{Number}+)|([Ee][+-]?{Number}+)|('.'{Number}+[Ee][+-]?{Number}+))
+String      = '"'({Unescaped}|'\'(["\/bfnrt]|'u'{Hex}{Hex}{Hex}{Hex}))*'"'
+            
+! ====================================================================
+! Rules
+! ====================================================================
+
+<Json>    ::= <Object>
+           |  <Array>
+
+<Object>  ::= '{' <Members> '}'
+           |  '{' '}'
+
+<Members> ::= <Members> ',' <Member>
+           |  <Member>
+
+<Member>  ::= String ':' <Value>
+
+<Array>   ::= '[' <Values> ']'
+           |  '[' ']'
+
+<Values>  ::= <Values> ',' <Value>
+           |  <Value>
+
+<Value>   ::= <Object>
+           |  <Array>
+           |  Integer
+           |  Float
+           |  String
+           |  false
+           |  null
+           |  true

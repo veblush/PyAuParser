@@ -1,0 +1,52 @@
+! ====================================================================
+! Properties
+! ====================================================================
+
+"Name"              = 'Block Example'
+"Author"            = 'Esun Kim'
+"Version"           = '1.0'
+"About"             = 'Test Data'
+"Start Symbol"      = <Main>
+
+! ====================================================================
+! Terminals
+! ====================================================================
+
+{StringCh}    = {Printable} - ["]
+
+ID            = {Alphanumeric}+
+String        = '"'( {StringCh} | '\'{Printable} )* '"'
+
+Comment Start = '/*'
+Comment End   = '*/'
+Comment Line  = '//'
+          
+Comment2 Block @= { Nesting = All, Advance = Character }
+Comment2       @= { Type = Noise }
+Comment2 Start  = '(*'
+Comment2 End    = '*)'
+
+Comment3 Block @= { Nesting = All, Advance = Token }
+Comment3       @= { Type = Noise }
+Comment3 Start  = '[*'
+Comment3 End    = '*]'
+
+HTML Start      = '<html>'
+HTML End        = '</html>'
+HTML Block     @= { Nesting = None, Advance = Character }          
+
+! ====================================================================
+! Rules
+! ====================================================================
+
+<Main>    ::= <Assigns>
+
+<Assigns> ::= <Assigns> ',' <Assign>
+           |  <Assign>
+           
+<Assign>  ::= ID '=' <Value>
+
+<Value>   ::= ID
+           |  String
+           |  HTML
+           
