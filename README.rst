@@ -4,8 +4,8 @@ PyAuParser - GOLD Parser Engine for Python
 
 :Version: 0.5
 :Author: Esun Kim (veblush+git_at_gmail_com)
-:Download: http://pypi.python.org/pypi/pyauparser
-:Source: https://github.com/veblush/pyauparser
+:Download: http://pypi.python.org/pypi/PyAuParser
+:Source: https://github.com/veblush/PyAuParser
 :Keywords: python, goldparser, parser, lalr
 
 .. contents::
