@@ -49,42 +49,60 @@ def export_to_dot(root, dot_path, output_dot_path, output_png_path):
         subprocess.call([dot_path, "-Tpng", "-o", output_png_path, output_dot_path])
 
 
-def main():
-    g = pyauparser.Grammar.load_file("data/operator.egt")
-
+def parse_and_write_dot_png(g, src_path, dot_path, png_path,
+                            trim_reduction=False,
+                            mark_id=False, simplified=False):
     p = pyauparser.Parser(g)
-    #p.trim_reduction = True
-    p.load_file("Data/operator_sample_1.txt")
+    p.trim_reduction = trim_reduction
+    p.load_file(src_path)
 
-    builder = pyauparser.TreeBuilder()
-    #g.get_production('<V> ::= ( <E> )').sr_forward_child = True
-    #builder = pyauparser.SimplifiedTreeBuilder()
+    if simplified:
+        builder = pyauparser.SimplifiedTreeBuilder()
+    else:
+        builder = pyauparser.TreeBuilder()
 
-    # handler marking a creation order number on each node
-    reduce_id = [0]
-    def mark_id_handler(handler):
-        def sub_handler(ret, arg):
-            handler(ret, arg)
-            if ret == pyauparser.ParseResultType.REDUCE:
-                reduce_id[0] += 1
-                arg.head.data.id = reduce_id[0]
-        return sub_handler
-    builder2 = mark_id_handler(builder)
-    #builder2 = builder
+    if mark_id:
+        reduce_id = [0]
+        def mark_id_handler(handler):
+            def sub_handler(ret, arg):
+                handler(ret, arg)
+                if ret == pyauparser.ParseResultType.REDUCE:
+                    reduce_id[0] += 1
+                    arg.head.data.id = reduce_id[0]
+            return sub_handler
+        builder_p = mark_id_handler(builder)
+    else:
+        builder_p = builder
 
-    ret = p.parse_all(builder2)
+    ret = p.parse_all(builder_p)
     if ret != pyauparser.ParseResultType.ACCEPT:
         print p.error_info
         return
 
+    print "* SRC:", src_path
     result = builder.result
     result.dump()
+    export_to_dot(result, r"dot.exe", dot_path, png_path)
+    print
 
-    export_to_dot(result,
-                  r"dot.exe",
-                  r"Data/parse_tree.dot",
-                  r"Data/parse_tree.png")
-    print "done"
+
+def main():
+    g = pyauparser.Grammar.load_file("data/operator.egt")
+
+    src_path = r"data/operator_sample_1.txt"
+    
+    parse_and_write_dot_png(g, src_path, "data/temp_1.dot", "data/temp_1.png",
+                            False, True, False)
+    
+    parse_and_write_dot_png(g, src_path, "data/temp_2.dot", "data/temp_2.png",
+                            True, True, False)
+    
+    parse_and_write_dot_png(g, src_path, "data/temp_3.dot", "data/temp_3.png",
+                            False, False, True)
+
+    g.get_production('<V> ::= ( <E> )').sr_forward_child = True
+    parse_and_write_dot_png(g, src_path, "data/temp_4.dot", "data/temp_4.png",
+                            False, False, True)
 
 
 if __name__ == "__main__":
