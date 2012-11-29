@@ -32,9 +32,10 @@ Prepare a Grammar
 First we need a grammar of language for parsing. Pyauparser use a .egt file which is
 compiled from .grm file which consists of text-formatted grammar definitions.
 
-You can write a .grm file with GOLD Parser or alternatives with GOLD-Meta-Language_.
+You can write a .grm file with GOLD-Parser_ or alternatives with GOLD-Meta-Language_.
 And instead of writing you can find lots of grammar files of popular languages at Grammars_.
 
+.. _GOLD-Parser: http://www.goldparser.org
 .. _GOLD-Meta-Language: http://goldparser.org/doc/grammars/index.htm
 .. _Grammars: http://goldparser.org/grammars/index.htm
 
