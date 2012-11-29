@@ -60,7 +60,7 @@ Let's start with a simple calculator grammar. It consists of number, +, -, ``*``
 	       |  '(' <E> ')'
 
 Compile a .grm file with GOLD Parser and save table data to a .egt file.
-We need only .egt file for a futher parsing process. (from now .grm file is not necessary.)
+We need only .egt file for a further parsing process. (from now .grm file is not necessary.)
 
 Import Library
 --------------
@@ -124,6 +124,7 @@ Result is following::
 	      <N> ::= <V>
 	...
 
+Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial1.py
 
 Evaluate with parsing events
 ----------------------------
@@ -155,6 +156,8 @@ eveluation process as following::
 Result is following::
 
 	Result = -19
+
+Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial2.py
 
 Evaluate with a syntax tree
 ---------------------------
@@ -191,6 +194,8 @@ If you need a value of sibling nodes or parents while evaluating a tree, this is
 Result is following::
 
 	Result = -19
+
+Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial3.py
 
 Simplified Tree
 ---------------
@@ -243,6 +248,8 @@ Result is following::
 
 	Result = -19
 
+Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial4.py
+
 Embedding a Grammar
 -------------------
 
@@ -258,6 +265,8 @@ instance is created without an .egt file as following::
 
 	import grammar_operator
 	g = grammar_operator.load()
+
+Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial5.py
 
 Changelog
 =========

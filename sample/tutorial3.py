@@ -13,6 +13,7 @@ def main():
         print
     except pyauparser.ParseError as e:
         print e
+        return
 
     # evaluate a parse tree by traverse nodes
     def evaluate(node):

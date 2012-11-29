@@ -3,6 +3,7 @@ import sys
 import pyauparser
 from pyauparser.grammar import get_enum_name
 
+
 def main():
     g = pyauparser.Grammar.load_file("data/operator.egt")
 
