@@ -3,7 +3,7 @@ PyAuParser - GOLD Parser Engine for Python
 ===================================================
 
 :Version: 0.5
-:Author: Esun Kim (veblush_at_gmail_com)
+:Author: Esun Kim (veblush+git_at_gmail_com)
 :Download: http://pypi.python.org/pypi/pyauparser
 :Source: https://github.com/veblush/pyauparser
 :Keywords: python, goldparser, parser, lalr
@@ -60,7 +60,7 @@ Let's start with a simple calculator grammar. It consists of number, +, -, ``*``
 	       |  '(' <E> ')'
 
 Compile a .grm file with GOLD Parser and save table data to a .egt file.
-We need only .egt file for a futher parsing process. (.grm file is not necessary)
+We need only .egt file for a futher parsing process. (from now .grm file is not necessary.)
 
 Import Library
 --------------
@@ -195,7 +195,7 @@ Result is following::
 Simplified Tree
 ---------------
 
-Parse tree is quite verbose to capture structure correctly. Therefore it's necessary to abstract a tree.
+A parse tree is quite verbose to capture structure correctly. Therefore it's necessary to abstract a tree.
 Usually there is an additional process to transform a parse tree to an abstract syntax tree. It's however bothersome.
 To handle this problem, a feature building a simplified tree is provided. Simply call the following function::
 
@@ -243,8 +243,8 @@ Result is following::
 
 	Result = -19
 
-Embedding Grammar
------------------
+Embedding a Grammar
+-------------------
 
 Basically we use a .egt grammar file exported from GOLD parser. Because of that
 we can dynamically use any grammar file on running but sometimes embedding grammar files is
