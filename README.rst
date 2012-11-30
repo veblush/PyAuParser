@@ -257,7 +257,7 @@ You can see that a result tree is very essential. The way evaluates a tree is fo
 	    def e(node):
 	        if node.token:
 	                return int(node.token.lexeme)
-	    else:
+	        else:
 	                handler = h.get(node.production.index, None)
 	                return handler(node.childs) if handler else e(node.childs[0])
 	    return e(node)
