@@ -84,7 +84,7 @@ But if you have a .grm file, you can make a .egt file with GOLD Parser 5 or newe
 Parse
 -----
 
-With grammar, you can parse a string or a file. There are two way to handle parsing results.
+With a grammar, you can parse a string or a file. There are two way to handle parsing results.
 First one is an event-driven way as following::
 
 	def callback(ret, arg):
@@ -101,7 +101,7 @@ Result is following::
 	...
 
 It may look complicated but will be handled in a simple way.
-Second one is a creating whole parse tree way as following::
+Second one is creating a whole parse tree way as following::
 
 	tree = pyauparser.parse_string_to_tree(g, "-2*(3+4)-5")
 
@@ -163,7 +163,7 @@ Items in the table can be constructed by auparser with a grammar file as followi
 
 	auparser show -P data/operator.egt
 
-And you can get a template table::
+And you can get a following template table and modify it as you need::
 
 	h = {
 	    '<E> ::= <E> + <M>': None,
