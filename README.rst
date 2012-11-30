@@ -73,7 +73,7 @@ Simply import::
 Load a Grammar
 --------------
 
-After preparing a .egt gramma file, we can load a grammar file now.
+After preparing a .egt grammar file, we can load a grammar file now.
 Load a grammar as following::
 
 	g = pyauparser.Grammar.load_file("data/operator.egt")
@@ -157,6 +157,26 @@ eveluation process as following::
 Result is following::
 
 	Result = -19
+
+As you see, a lookup-table is required to evaluate a value with parsing events.
+Items in the table can be constructed by auparser with a grammar file as following:
+
+	auparser show -P data/operator.egt
+
+And you can get a template table::
+
+	h = {
+	    '<E> ::= <E> + <M>': None,
+	    '<E> ::= <E> - <M>': None,
+	    '<E> ::= <M>': None,
+	    '<M> ::= <M> * <N>': None,
+	    '<M> ::= <M> / <N>': None,
+	    '<M> ::= <N>': None,
+	    '<N> ::= - <V>': None,
+	    '<N> ::= <V>': None,
+	    '<V> ::= Num': None,
+	    '<V> ::= ( <E> )': None,
+	}
 
 Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial2.py
 
