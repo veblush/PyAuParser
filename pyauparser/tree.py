@@ -24,7 +24,7 @@ class TreeNode(object):
 
     def dump(self, depth=0):
         if self.is_non_terminal:
-            print u"{0}{1}".format("  " * depth, 
+            print u"{0}{1}".format("  " * depth,
                                    self.production)
             for c in self.childs:
                 c.dump(depth + 1)
@@ -75,7 +75,7 @@ class SimplifiedTreeBuilder(object):
 
             # remove every symbol which has only single lexeme.
             if p.sr_remove_single_lexeme:
-                ccs = [(cc[0], cc[1]) for cc in ccs 
+                ccs = [(cc[0], cc[1]) for cc in ccs
                                       if cc[0].production or
                                          not cc[0].token.symbol.single_lexeme]
 
@@ -92,11 +92,13 @@ class SimplifiedTreeBuilder(object):
             # change a recursive child node to a flat list
             if p.sr_listify_recursion:
                 for i, cc in enumerate(ccs):
-                    if cc[0].production and cc[0].production.head.index == p.head.index:
-                        if cc[0].production.index == p.index and cc[1].is_non_terminal:
-                            ccs = (ccs[:i] + 
+                    if (cc[0].production and
+                        cc[0].production.head.index == p.head.index):
+                        if (cc[0].production.index == p.index and
+                            cc[1].is_non_terminal):
+                            ccs = (ccs[:i] +
                                    [(None, c) for c in cc[1].childs] +
-                                   ccs[i+1:])
+                                   ccs[i + 1:])
                         elif len(cc[0].handles) == 0:
                             del ccs[i]
                         break
@@ -105,11 +107,11 @@ class SimplifiedTreeBuilder(object):
             if p.sr_merge_child:
                 for i, cc in enumerate(ccs):
                     if cc[0].production:
-                        if (cc[1].is_non_terminal and 
+                        if (cc[1].is_non_terminal and
                             cc[0].production.index == cc[1].production.index):
-                            ccs = (ccs[:i] + 
+                            ccs = (ccs[:i] +
                                    [(None, c) for c in cc[1].childs] +
-                                   ccs[i+1:])
+                                   ccs[i + 1:])
                         break
 
             # create a non-terminal node

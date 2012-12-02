@@ -9,9 +9,10 @@ class Token(object):
        lexeme: text hit
     """
 
-    def __init__(self, symbol, lexeme):
+    def __init__(self, symbol, lexeme, position):
         self.symbol = symbol
         self.lexeme = lexeme
+        self.position = position
 
     def __str__(self):
         return "{0} {1}".format(self.symbol.name, repr(self.lexeme))
@@ -51,8 +52,8 @@ class Lexer(object):
         self.buf = u""
         self.buf_cur = 0
         self.buf_remain = 0
-        self.line = 0
-        self.column = 0
+        self.line = 1
+        self.column = 1
         self.group_stack = []
 
     def _load_buffer(self):
@@ -77,7 +78,7 @@ class Lexer(object):
                 if new_line_i == -1:
                     self.column += n
                 else:
-                    self.column = self.buf_cur + n - new_line_i
+                    self.column = 1 + self.buf_cur + n - new_line_i
                 break
         # manipulate buffer
         if n < self.buf_remain:
@@ -133,13 +134,13 @@ class Lexer(object):
 
         if hit_symbol:
             lexeme = self.buf[self.buf_cur:self.buf_cur + hit_cur]
-            return Token(hit_symbol, lexeme)
+            return Token(hit_symbol, lexeme, self.position)
         else:
             if cur == 0:
-                return Token(self.grammar.symbol_EOF, "")
+                return Token(self.grammar.symbol_EOF, "", self.position)
             else:
                 lexeme = self.buf[self.buf_cur:self.buf_cur + cur]
-                return Token(self.grammar.symbol_Error, lexeme)
+                return Token(self.grammar.symbol_Error, lexeme, self.position)
 
     def read_token(self):
         """ Read next token and return it.
@@ -161,7 +162,8 @@ class Lexer(object):
             if nest_group:
                 # into nested
                 self._consume_buffer(len(token.lexeme))
-                self.group_stack.append([symbol_group, token.lexeme])
+                self.group_stack.append([symbol_group,
+                                         token.lexeme, token.position])
 
             elif len(self.group_stack) == 0:
                 # token in plain
@@ -175,7 +177,7 @@ class Lexer(object):
                     pop[1] = pop[1] + token.lexeme
                     self._consume_buffer(len(token.lexeme))
                 if len(self.group_stack) == 0:
-                    return Token(pop[0].container, pop[1])
+                    return Token(pop[0].container, pop[1], pop[2])
                 else:
                     self.group_stack[-1][1] = self.group_stack[-1][1] + pop[1]
 

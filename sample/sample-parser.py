@@ -23,14 +23,14 @@ def main():
         elif ret == pyauparser.ParseResultType.SHIFT:
             token = p.token
             print "[Shift] {0} '{1}' ({2}:{3})".format(
-                    token.symbol.name, token.lexeme, p.line, p.column)
+                    token.symbol.name, token.lexeme,
+                    token.position[0], token.position[1])
         elif ret == pyauparser.ParseResultType.REDUCE:
             print "[Reduce] {0}".format(p.reduction.production)
         elif ret == pyauparser.ParseResultType.REDUCE_ELIMINATED:
             print "[ReduceEliminated]"
         elif ret == pyauparser.ParseResultType.ERROR:
-            print "[Error] '{0}' ({1}:{2})".format(
-                    p.error_info, p.line, p.column)
+            print "[Error] {0}".format(p.error_info)
             return
 
     print "done", p.position

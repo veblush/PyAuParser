@@ -43,21 +43,26 @@ class ParseErrorType:
 
 
 class ParseErrorInfo(object):
-    def __init__(self, type, state, token, expected_symbols):
+    def __init__(self, type, position, state, token, expected_symbols):
         self.type = type
+        self.position = position
         self.state = state
         self.token = token
         self.expected_symbols = expected_symbols
 
     def __str__(self):
         if   self.type == ParseErrorType.LEXICAL_ERROR:
-            return "LexicalError Token='{0}'".format(self.token.lexeme)
+            return "LexicalError({0}:{1}) Token='{1}'".format(
+                self.token.position[0], self.token.position[1],
+                self.token.lexeme)
         elif self.type == ParseErrorType.SYNTAX_ERROR:
-            return "SyntaxError Token={0} '{1}' ExpectedTokens=[{2}]".format(
+            return "SyntaxError({0}:{1}) Token={1} '{2}' ExpectedTokens=[{3}]".format(
+                self.token.position[0], self.token.position[1],
                 self.token.symbol.name, self.token.lexeme,
                 " ,".join([s.name for s in self.expected_symbols]))
         else:
-            return "InternalError State={0}".format(self.state.index)
+            return "InternalError({0}:{1}) State={1}".format(
+                self.position[0], self.position[1], self.state.index)
 
 
 class Reduction(object):
@@ -79,7 +84,7 @@ class Reduction(object):
 class ProductionHandler(object):
     """Simple handler for evaluation parse tree.
        It contains a dict of production-rule to handler.
-       In parsing, every reduce events invoke __call__ 
+       In parsing, every reduce events invoke __call__
        and a corresponding handler is called.
     """
 
@@ -124,7 +129,7 @@ class Parser(object):
         self.lexer = lexer
         self.state = self.grammar.lalrinit
         self.stack = [ParseItem(self.state), ]
-        self.token = Token(None, "")
+        self.token = Token(None, "", None)
         self.token_used = True
         self.error_info = None
         self.reduction = None
@@ -173,6 +178,7 @@ class Parser(object):
         if self.token.symbol.type == SymbolType.ERROR:
             # Tokenizer error_info
             self.error_info = ParseErrorInfo(ParseErrorType.LEXICAL_ERROR,
+                                             self.lexer.position,
                                              self.state, self.token, None)
             return ParseResultType.ERROR
 
@@ -187,6 +193,7 @@ class Parser(object):
                                           SymbolType.GROUP_END):
                     expected_symbols.append(action.symbol)
             self.error_info = ParseErrorInfo(ParseErrorType.SYNTAX_ERROR,
+                                             self.lexer.position,
                                              self.state, self.token, expected_symbols)
             return ParseResultType.ERROR
 
@@ -216,6 +223,7 @@ class Parser(object):
             goto_action = top_state.actions[production.head.index]
             if goto_action.type != LALRActionType.GOTO:
                 self.error_info = ParseErrorInfo(ParseErrorType.INTERNAL_ERROR,
+                                                 self.lexer.position,
                                                  self.state, self.token, None)
                 return ParseResult.ERROR
             self.state = goto_action.target
@@ -234,6 +242,7 @@ class Parser(object):
         elif action.type == LALRActionType.GOTO:
             # Goto
             self.error_info = ParseErrorInfo(ParseErrorType.INTERNAL_ERROR,
+                                             self.lexer.position,
                                              self.state, self.token, None)
             return ParseResultType.ERROR
 
@@ -245,6 +254,7 @@ class Parser(object):
         else:
             # Internal Error
             self.error_info = ParseErrorInfo(ParseErrorType.INTERNAL_ERROR,
+                                             self.lexer.position,
                                              self.state, self.token, None)
             return ParseResultType.ERROR
 

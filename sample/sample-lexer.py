@@ -16,12 +16,13 @@ def main():
     lexer.load_file("data/operator_sample_1.txt")
 
     while True:
-        position, token = lexer.position, lexer.read_token()
-        print (token.symbol.name, token.lexeme, position)
+        token = lexer.read_token()
+        print (token.symbol.name, token.lexeme, token.position)
         if   token.symbol.type == pyauparser.SymbolType.END_OF_FILE:
             break
         elif token.symbol.type == pyauparser.SymbolType.ERROR:
-            print "ERROR:", token.lexeme
+            print "ERROR({0}:{1}): Unknown Token '{0}'".format(
+                token.position[0], token.position[1], token.lexeme)
             return
 
     print "done", lexer.position
