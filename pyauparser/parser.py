@@ -178,7 +178,7 @@ class Parser(object):
         if self.token.symbol.type == SymbolType.ERROR:
             # Tokenizer error_info
             self.error_info = ParseErrorInfo(ParseErrorType.LEXICAL_ERROR,
-                                             self.lexer.position,
+                                             self.position,
                                              self.state, self.token, None)
             return ParseResultType.ERROR
 
@@ -193,8 +193,9 @@ class Parser(object):
                                           SymbolType.GROUP_END):
                     expected_symbols.append(action.symbol)
             self.error_info = ParseErrorInfo(ParseErrorType.SYNTAX_ERROR,
-                                             self.lexer.position,
-                                             self.state, self.token, expected_symbols)
+                                             self.position,
+                                             self.state, self.token,
+                                             expected_symbols)
             return ParseResultType.ERROR
 
         if   action.type == LALRActionType.SHIFT:
@@ -223,7 +224,7 @@ class Parser(object):
             goto_action = top_state.actions[production.head.index]
             if goto_action.type != LALRActionType.GOTO:
                 self.error_info = ParseErrorInfo(ParseErrorType.INTERNAL_ERROR,
-                                                 self.lexer.position,
+                                                 self.position,
                                                  self.state, self.token, None)
                 return ParseResult.ERROR
             self.state = goto_action.target
@@ -242,7 +243,7 @@ class Parser(object):
         elif action.type == LALRActionType.GOTO:
             # Goto
             self.error_info = ParseErrorInfo(ParseErrorType.INTERNAL_ERROR,
-                                             self.lexer.position,
+                                             self.position,
                                              self.state, self.token, None)
             return ParseResultType.ERROR
 
@@ -254,7 +255,7 @@ class Parser(object):
         else:
             # Internal Error
             self.error_info = ParseErrorInfo(ParseErrorType.INTERNAL_ERROR,
-                                             self.lexer.position,
+                                             self.position,
                                              self.state, self.token, None)
             return ParseResultType.ERROR
 

@@ -29,9 +29,9 @@ class TreeNode(object):
             for c in self.childs:
                 c.dump(depth + 1)
         elif self.is_terminal:
-            print u"{0}{1} '{2}'".format("  " * depth,
+            print u"{0}{1} {2}".format("  " * depth,
                                          self.token.symbol.name,
-                                         self.token.lexeme)
+                                         repr(self.token.lexeme))
         else:
             print u"{0} None".format("  " * depth)
 

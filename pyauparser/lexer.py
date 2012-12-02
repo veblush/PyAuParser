@@ -25,7 +25,7 @@ class Lexer(object):
 
     def __init__(self, grammar):
         self.grammar = grammar
-        self._load(None)
+        self._load(None, False)
 
     def load_file(self, file_or_path, encoding=None):
         """ Load a file to lexer.
@@ -35,21 +35,22 @@ class Lexer(object):
             isinstance(file_or_path, unicode)):
             import codecs
             if encoding:
-                self._load(codecs.open(file_or_path, encoding=encoding))
+                self._load(codecs.open(file_or_path, encoding=encoding), True)
             else:
-                self._load(codecs.open(file_or_path))
+                self._load(open(file_or_path, "rb"), False)
         else:
-            self._load(file_or_path)
+            self._load(file_or_path, encoding != None)
 
     def load_string(self, s):
         """ Load a string to lexer.
         """
         import StringIO
-        self._load(StringIO.StringIO(s))
+        self._load(StringIO.StringIO(s), s is unicode)
 
-    def _load(self, file):
+    def _load(self, file, is_unicode):
         self.file = file
-        self.buf = u""
+        self.is_unicode = is_unicode
+        self.buf = u"" if is_unicode else str()
         self.buf_cur = 0
         self.buf_remain = 0
         self.line = 1
@@ -85,7 +86,7 @@ class Lexer(object):
             self.buf_cur += n
             self.buf_remain -= n
         else:
-            self.buf = u""
+            self.buf = u"" if self.is_unicode else str()
             self.buf_cur = 0
             self.buf_remain = 0
 
