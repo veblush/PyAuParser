@@ -292,6 +292,11 @@ Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial5.py
 Changelog
 =========
 
+* 0.51
+
+  * Add a position field to Token class
+  * Support non-unicode files
+
 * 0.5
 
   * First release
