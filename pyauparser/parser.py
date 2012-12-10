@@ -52,14 +52,14 @@ class ParseErrorInfo(object):
 
     def __str__(self):
         if   self.type == ParseErrorType.LEXICAL_ERROR:
-            return "LexicalError({0}:{1}) Token='{1}'".format(
+            return "LexicalError({0}:{1}) Lexeme='{1}'".format(
                 self.token.position[0], self.token.position[1],
                 self.token.lexeme)
         elif self.type == ParseErrorType.SYNTAX_ERROR:
-            return "SyntaxError({0}:{1}) Token={1} '{2}' ExpectedTokens=[{3}]".format(
+            return "SyntaxError({0}:{1}) Token={1} ExpectedTokens=[{2}]".format(
                 self.token.position[0], self.token.position[1],
-                self.token.symbol.name, self.token.lexeme,
-                " ,".join([s.name for s in self.expected_symbols]))
+                self.token,
+                ", ".join([s.id for s in self.expected_symbols]))
         else:
             return "InternalError({0}:{1}) State={1}".format(
                 self.position[0], self.position[1], self.state.index)

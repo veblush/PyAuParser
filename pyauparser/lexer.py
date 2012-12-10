@@ -15,7 +15,7 @@ class Token(object):
         self.position = position
 
     def __str__(self):
-        return "{0} {1}".format(self.symbol.name, repr(self.lexeme))
+        return "{0} {1}".format(self.symbol.id, repr(self.lexeme))
 
 
 class Lexer(object):
@@ -39,7 +39,7 @@ class Lexer(object):
             else:
                 self._load(open(file_or_path, "rb"), False)
         else:
-            self._load(file_or_path, encoding != None)
+            self._load(file_or_path, encoding is not None)
 
     def load_string(self, s):
         """ Load a string to lexer.

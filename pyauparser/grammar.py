@@ -56,7 +56,7 @@ class Symbol(object):
         self.type = type
 
     @property
-    def pname(self):
+    def id(self):
         if self.type == SymbolType.NON_TERMINAL:
             return u"<{0}>".format(self.name)
         elif self.type == SymbolType.TERMINAL:
@@ -110,7 +110,9 @@ class SymbolGroup(object):
     def __str__(self):
         return "{0}:{1}={2} {3} {4} {5} {6} {7}".format(
             self.index, self.name,
-            self.container.pname, self.start.pname, self.end.pname,
+            self.container.id,
+            self.start.id,
+            self.end.id,
             get_enum_name(AdvanceModeType, self.advance_mode),
             get_enum_name(EndingModeType, self.ending_mode),
             [group.index for group in self.nesting_groups])
@@ -137,9 +139,9 @@ class Production(object):
         self.handles = handles
 
     @property
-    def pname(self):
+    def id(self):
         return "{0} ::= {1}".format(
-            self.head.pname, " ".join(h.pname for h in self.handles))
+            self.head.id, " ".join(h.id for h in self.handles))
 
     def __repr__(self):
         return u"Production({0})".format(u", ".join((
@@ -147,7 +149,7 @@ class Production(object):
             repr([h.index for h in self.handles]))))
 
     def __str__(self):
-        return self.pname
+        return self.id
 
 
 class DFAState(object):
@@ -169,7 +171,7 @@ class DFAState(object):
     def __str__(self):
         return "{0}: Accept({1}) Edges({2})".format(
             self.index,
-            self.accept_symbol.pname if self.accept_symbol else "",
+            self.accept_symbol.id if self.accept_symbol else "",
             "; ".join((str(edge) for edge in self.edges)))
 
 
@@ -227,7 +229,7 @@ class LALRAction(object):
 
     def __str__(self):
         return "{0} -> {1} : {2}".format(
-            self.symbol.pname if self.symbol else "",
+            self.symbol.id if self.symbol else "",
             get_enum_name(LALRActionType, self.type),
             self.target.index if self.target else "")
 
@@ -257,8 +259,8 @@ class Grammar(object):
         self.lalrstates = {}
         self.symbol_EOF = None
         self.symbol_Error = None
-        self.symbol_pname_lookup = {}
-        self.production_pname_lookup = {}
+        self.symbol_id_lookup = {}
+        self.production_id_lookup = {}
 
     @staticmethod
     def load_file(file_or_path):
@@ -415,10 +417,10 @@ class Grammar(object):
         self.symbol_Error = [s for s in self.symbols.itervalues() if s.type == SymbolType.ERROR][0]
 
         for s in self.symbols.itervalues():
-            self.symbol_pname_lookup[s.pname] = s
+            self.symbol_id_lookup[s.id] = s
 
         for p in self.productions.itervalues():
-            self.production_pname_lookup[p.pname] = p
+            self.production_id_lookup[p.id] = p
 
     def _build_dfa_lookup(self):
         # make a merged lookup-table for fast finding next state
@@ -483,11 +485,11 @@ class Grammar(object):
             p.sr_remove_single_lexeme = ((len(nts) > 0 or len(its) > 0) and
                                          (len(ts) - len(its) > 0))
 
-    def get_symbol(self, pname):
-        return self.symbol_pname_lookup.get(pname, None)
+    def get_symbol(self, id):
+        return self.symbol_id_lookup.get(id, None)
 
-    def get_production(self, pname):
-        return self.production_pname_lookup.get(pname, None)
+    def get_production(self, id):
+        return self.production_id_lookup.get(id, None)
 
     def export_to_txt(self, f):
         """Export information to a text file.
