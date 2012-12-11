@@ -28,17 +28,17 @@ def c_show(cmd_args):
     elif mode == "-s":
         print "* symbols"
         for k, v in sorted(g.symbols.iteritems()):
-            print('\t{0}\t{1}'.format(k, repr(v.pname)))
+            print('\t{0}\t{1}'.format(k, repr(v.id)))
     elif mode == "-p":
         g = pyauparser.Grammar.load_file(egt_path)
         print "* productions"
         for k, v in sorted(g.productions.iteritems()):
-            print('\t{0}\t{1}'.format(k, repr(v.pname)))
+            print('\t{0}\t{1}'.format(k, repr(v.id)))
     elif mode == "-P":
         g = pyauparser.Grammar.load_file(egt_path)
         print "h = {"
         for k, v in sorted(g.productions.iteritems()):
-            print('\t{0}: None,'.format(repr(v.pname)))
+            print('\t{0}: None,'.format(repr(v.id)))
         print "}"
 
 
@@ -112,19 +112,19 @@ def c_parse(cmd_args):
     while True:
         ret = p.parse_step()
         if   ret == pyauparser.ParseResultType.ACCEPT:
-            print "[Accept]"
+            print "Accept"
             break
         elif ret == pyauparser.ParseResultType.SHIFT:
             token = p.token
-            print "[Shift] {0} '{1}' ({2}:{3})".format(
-                    token.symbol.name, token.lexeme, p.line, p.column)
+            print "Shift\t{0} ({1}:{2})".format(
+                token, p.line, p.column)
         elif ret == pyauparser.ParseResultType.REDUCE:
-            print "[Reduce] {0}".format(p.reduction.production)
+            print "Reduce\t{0}".format(p.reduction.production)
         elif ret == pyauparser.ParseResultType.REDUCE_ELIMINATED:
-            print "[ReduceEliminated]"
+            print "ReduceEliminated"
         elif ret == pyauparser.ParseResultType.ERROR:
-            print "[Error] '{0}' ({1}:{2})".format(
-                    p.error_info, p.line, p.column)
+            print "Error\t'{0}' ({1}:{2})".format(
+                p.error_info, p.line, p.column)
             return
 
 
@@ -145,9 +145,11 @@ def c_tree(cmd_args):
     g = pyauparser.Grammar.load_file(egt_path)
     try:
         if simplified:
-            tree = pyauparser.parse_file_to_stree(g, data_path, encoding=encoding)
+            tree = pyauparser.parse_file_to_stree(g, data_path,
+                                                  encoding=encoding)
         else:
-            tree = pyauparser.parse_file_to_tree(g, data_path, encoding=encoding)
+            tree = pyauparser.parse_file_to_tree(g, data_path,
+                                                 encoding=encoding)
         tree.dump()
     except pyauparser.ParseError as e:
         print(e)
@@ -156,7 +158,7 @@ def c_tree(cmd_args):
 def usage():
     print("auparser command ...")
     print "  h[elp]     : show help"
-    print 
+    print
     print "  s[how]     : show information from a grammar file"
     print "    [options] egt"
     print "    -s show a symbol list"
