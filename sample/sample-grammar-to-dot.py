@@ -8,12 +8,12 @@ import csv
 
 
 def get_charset_desc(cs):
-    chrs = sum(r[1]-r[0]+1 for r in cs.ranges)
+    chrs = sum(r[1] - r[0] + 1 for r in cs.ranges)
 
     if chrs <= 10:
         s = ""
         for r in cs.ranges:
-            for o in range(r[0], r[1]+1):
+            for o in range(r[0], r[1] + 1):
                 c = chr(o)
                 if   c == '"':
                     s += '\\" '
@@ -26,11 +26,11 @@ def get_charset_desc(cs):
     else:
         s = ""
         for r in cs.ranges:
-            if r[1]-r[0] == 0:
+            if r[1] - r[0] == 0:
                 s += "#{0} ".format(r[0])
             else:
                 s += "#{0}~#{1} ".format(r[0], r[1])
-    
+
     return s.strip(" ")
 
 
@@ -65,14 +65,15 @@ def dfa_to_dot(g, dot_path, output_dot_path, output_png_path):
 
     if output_png_path:
         import subprocess
-        subprocess.call([dot_path, "-Tpng", "-o", output_png_path, output_dot_path])
+        subprocess.call([dot_path, "-Tpng", "-o",
+                         output_png_path, output_dot_path])
 
 
 def lalr_to_csv(g, csv_path):
     writer = csv.writer(open(csv_path, 'wb'), dialect='excel')
     writer.writerow([""] + [s.id for s in g.symbols.itervalues()])
     for s in g.lalrstates.itervalues():
-        row = [ "{0}".format(s.index) ]
+        row = ["{0}".format(s.index)]
         for sym in xrange(len(g.symbols)):
             if sym in s.actions:
                 a = s.actions[sym]
@@ -89,6 +90,7 @@ def lalr_to_csv(g, csv_path):
 
         writer.writerow(row)
 
+
 def main():
     g = pyauparser.Grammar.load_file("data/operator.egt")
     dfa_to_dot(g,
@@ -97,6 +99,7 @@ def main():
                "data/temp_operator_dfa.png")
     lalr_to_csv(g, "data/temp_operator_lalr.csv")
     print "done"
+
 
 if __name__ == "__main__":
     main()
