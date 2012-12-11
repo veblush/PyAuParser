@@ -64,11 +64,11 @@ def parse_and_write_dot_png(g, src_path, dot_path, png_path,
     if mark_id:
         reduce_id = [0]
         def mark_id_handler(handler):
-            def sub_handler(ret, arg):
-                handler(ret, arg)
+            def sub_handler(ret, p):
+                handler(ret, p)
                 if ret == pyauparser.ParseResultType.REDUCE:
                     reduce_id[0] += 1
-                    arg.head.data.id = reduce_id[0]
+                    p.reduction.head.data.id = reduce_id[0]
             return sub_handler
         builder_p = mark_id_handler(builder)
     else:

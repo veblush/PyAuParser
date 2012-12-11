@@ -42,18 +42,19 @@ class TreeBuilder(object):
     def __init__(self):
         self.result = None
 
-    def __call__(self, ret, arg):
+    def __call__(self, ret, p):
         if ret == parser.ParseResultType.SHIFT:
             # create a terminal node
-            arg.data = TreeNode(token=arg.token)
+            p.top.data = TreeNode(token=p.top.token)
 
         elif ret == parser.ParseResultType.REDUCE:
             # create a non-terminal node
-            arg.head.data = TreeNode(production=arg.production,
-                                     childs=[h.data for h in arg.handles])
+            r = p.reduction
+            r.head.data = TreeNode(production=r.production,
+                                   childs=[h.data for h in r.handles])
 
         elif ret == parser.ParseResultType.ACCEPT:
-            self.result = arg.data
+            self.result = p.top.data
 
 
 class SimplifiedTreeBuilder(object):
@@ -65,12 +66,13 @@ class SimplifiedTreeBuilder(object):
     def __init__(self):
         self.result = None
 
-    def __call__(self, ret, arg):
+    def __call__(self, ret, p):
         if ret == parser.ParseResultType.REDUCE:
-            p = arg.production
+            r = p.reduction
+            p = r.production
 
             # make all handles into a list of child candidate.
-            ccs = [(h, h.data) for h in arg.handles]
+            ccs = [(h, h.data) for h in r.handles]
 
             # remove every symbol which has only single lexeme.
             if p.sr_remove_single_lexeme:
@@ -85,7 +87,7 @@ class SimplifiedTreeBuilder(object):
 
             # forward a child node and drop me
             if p.sr_forward_child and len(ccs) == 1:
-                arg.head.data = ccs[0][1]
+                r.head.data = ccs[0][1]
                 return
 
             # change a recursive child node to a flat list
@@ -114,8 +116,8 @@ class SimplifiedTreeBuilder(object):
                         break
 
             # create a non-terminal node
-            arg.head.data = TreeNode(production=arg.production,
-                                     childs=[cc[1] for cc in ccs])
+            r.head.data = TreeNode(production=r.production,
+                                   childs=[cc[1] for cc in ccs])
 
         elif ret == parser.ParseResultType.ACCEPT:
-            self.result = arg.data
+            self.result = p.top.data

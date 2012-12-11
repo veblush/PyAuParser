@@ -103,17 +103,18 @@ class ProductionHandler(object):
             self.handler_map = handler_map
         self.result = None
 
-    def __call__(self, ret, arg):
+    def __call__(self, ret, p):
         if ret == ParseResultType.REDUCE:
-            childs = [(h.data if h.production else h.token) for h in arg.handles]
-            handler = self.handler_map.get(arg.production.index, None)
+            r = p.reduction
+            childs = [(h.data if h.production else h.token) for h in r.handles]
+            handler = self.handler_map.get(r.production.index, None)
             if handler:
-                arg.head.data = handler(childs)
+                r.head.data = handler(childs)
             else:
-                arg.head.data = childs[0]
+                r.head.data = childs[0]
 
         elif ret == ParseResultType.ACCEPT:
-            self.result = arg.data
+            self.result = p.top.data
 
 
 class Parser(object):
@@ -273,24 +274,10 @@ class Parser(object):
         """ Perform all parse-steps until accept or error.
             In any parsing steps, handler will be invoked with a parsing state.
         """
-        if handler:
-            while True:
-                ret = self.parse_step()
-                if   ret == ParseResultType.ACCEPT:
-                    handler(ret, self.top)
-                    return ret
-                elif ret == ParseResultType.SHIFT:
-                    handler(ret, self.top)
-                elif ret == ParseResultType.REDUCE:
-                    handler(ret, self.reduction)
-                elif ret == ParseResultType.REDUCE_ELIMINATED:
-                    handler(ret, self.top)
-                elif ret == ParseResultType.ERROR:
-                    handler(ret, self.error_info)
-                    return ret
-        else:
-            while True:
-                ret = self.parse_step()
-                if ret in (ParseResultType.ACCEPT,
-                           ParseResultType.ERROR):
-                    return ret
+        while True:
+            ret = self.parse_step()
+            if handler:
+                handler(ret, self)
+            if ret in (ParseResultType.ACCEPT,
+                       ParseResultType.ERROR):
+                return ret
