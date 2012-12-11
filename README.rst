@@ -87,17 +87,25 @@ Parse
 With a grammar, you can parse a string or a file. There are two way to handle parsing results.
 First one is an event-driven way as following::
 
-	def callback(ret, arg):
-            print "{0}\t{1}".format(get_enum_name(pyauparser.parser.ParseResultType, ret), arg)
+	def callback(ret, p):
+	    if ret == pyauparser.parser.ParseResultType.SHIFT:
+	        print "Shift\t{0}".format(p.top)
+	    elif ret == pyauparser.parser.ParseResultType.REDUCE:
+	        print "Reduce\t{0}".format(p.reduction)
+	    elif ret == pyauparser.parser.ParseResultType.ACCEPT:
+	        print "Accept\t{0}".format(p.top)
+	    elif ret == pyauparser.parser.ParseResultType.ERROR:
+	        print "Error\t{0}".format(p.error_info)
+	
 	pyauparser.parse_string(g, "-2*(3+4)-5", handler=callback)
 
 Result is following::
 
-	SHIFT   S=1, V=- u'-'
-	SHIFT   S=3, V=Num u'2'
-	REDUCE  P=8, H=(S=8, V=<V> ::= Num), Hs=[(S=3, V=Num u'2')]
-	REDUCE  P=6, H=(S=6, V=<N> ::= - <V>), Hs=[(S=1, V=- u'-'), (S=8, V=<V> ::= Num)]
-	REDUCE  P=5, H=(S=5, V=<M> ::= <N>), Hs=[(S=6, V=<N> ::= - <V>)]
+	Shift	S=1, T=- '-'
+	Shift	S=3, T=Num '2'
+	Reduce	P=8, H=(S=8, P=<V> ::= Num), Hs=[(S=3, T=Num '2')]
+	Reduce	P=6, H=(S=6, P=<N> ::= - <V>), Hs=[(S=1, T=- '-'), (S=8, P=<V> ::= Num)]
+	Reduce	P=5, H=(S=5, P=<M> ::= <N>), Hs=[(S=6, P=<N> ::= - <V>)]
 	...
 
 It may look complicated but will be handled in a simple way.
@@ -291,6 +299,12 @@ Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial5.py
 
 Changelog
 =========
+
+* 0.52
+
+  * Change arguments of parser event from top, reduction, error_info to a parser itself to
+    simplify the interface
+  * Change pname of symbol and production to id to clarify the meaning
 
 * 0.51
 
