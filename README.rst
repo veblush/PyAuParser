@@ -2,14 +2,17 @@
 PyAuParser - GOLD Parser Engine for Python
 ===================================================
 
-:Version: 0.52
+:Version: 0.53
 :Author: Esun Kim (veblush+git_at_gmail_com)
 :Download: http://pypi.python.org/pypi/PyAuParser
 :Source: https://github.com/veblush/PyAuParser
+:License: The MIT License `LICENSE`_
 :Keywords: python, goldparser, parser, lalr
 
 .. contents::
     :local:
+
+.. _LICENSE: https://github.com/veblush/PyAuParser/blob/master/LICENSE.txt
 
 Overview
 ========
@@ -19,7 +22,7 @@ New python engine for GOLD Parser. It supports unicode and new .egt file format.
 Installation
 ============
 
-You can install arrow from pip::
+You can install pyauparser from pip::
 
 	$ pip install pyauparser
 
@@ -299,6 +302,10 @@ Link: https://github.com/veblush/PyAuParser/blob/master/sample/tutorial5.py
 
 Changelog
 =========
+
+* 0.53
+
+  * Fix auparser to work correctly under linux
 
 * 0.52
 
