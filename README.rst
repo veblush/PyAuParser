@@ -170,9 +170,9 @@ Result is following::
 	Result = -19
 
 As you see, a lookup-table is required to evaluate a value with parsing events.
-Items in the table can be constructed by auparser with a grammar file as following:
+Items in the table can be constructed by auparser with a grammar file as following::
 
-	auparser show -P data/operator.egt
+	auparser.py show -P data/operator.egt
 
 And you can get a following template table and modify it as you need::
 
@@ -290,7 +290,7 @@ we can dynamically use any grammar file on running but sometimes embedding gramm
 cumbersome or impossible. To handle this problem a static python module consists of
 grammar information can be generated as following::
 
-	auparser class data/operator.egt grammar_operator.py
+	auparser.py class data/operator.egt grammar_operator.py
 
 We got grammar_operator.py. By import a grammar module and call load function grammar 
 instance is created without an .egt file as following::
