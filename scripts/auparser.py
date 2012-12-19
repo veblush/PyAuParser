@@ -158,7 +158,7 @@ def c_tree(cmd_args):
 
 
 def usage():
-    print("auparser command ...")
+    print "auparser command ..."
     print "  h[elp]     : show help"
     print
     print "  s[how]     : show information from a grammar file"
